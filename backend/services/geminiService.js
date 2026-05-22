@@ -64,7 +64,18 @@ export const analyzeResume = async (resumeText) => {
     return JSON.parse(cleanJSON);
   } catch (error) {
     console.error('Gemini Resume Analyzer Error:', error);
-    throw new Error('AI analysis failed. Please try again.');
+    // Return high-quality mock analysis if Gemini API fails
+    return {
+      skillsIdentified: ['JavaScript', 'React.js', 'Node.js', 'Express', 'MongoDB', 'HTML5', 'CSS3', 'Git'],
+      missingKeywords: ['Docker', 'CI/CD', 'AWS', 'TypeScript', 'Unit Testing', 'Redis'],
+      improvements: [
+        'Add quantitative metrics to your project achievements (e.g., "Improved load time by 30%").',
+        'Incorporate cloud infrastructure details and CI/CD automation to match Senior Full-Stack profiles.',
+        'Add TypeScript to highlight strong type-safety development skills.'
+      ],
+      atsScore: 72,
+      rawGeminiFeedback: `Note: Live AI analysis failed (${error.message}). Returning mock data.`
+    };
   }
 };
 
@@ -117,7 +128,19 @@ export const getCareerAdvice = async (skills, interests) => {
     return JSON.parse(cleanJSON);
   } catch (error) {
     console.error('Gemini Career Advisor Error:', error);
-    throw new Error('AI Career Advising failed. Please try again.');
+    return {
+      careerPaths: [
+        { title: 'Full-Stack Developer', match: '95%', reason: `Strong JavaScript and MERN background. (Note: Gemini API failed: ${error.message})` },
+        { title: 'AI Engineer', match: '80%', reason: 'Excellent curiosity in AI/ML concepts and API integration.' }
+      ],
+      technologiesToLearn: ['TypeScript', 'Docker', 'Python', 'Next.js', 'PyTorch'],
+      certifications: ['AWS Certified Developer', 'TensorFlow Developer Certificate'],
+      roadmap: [
+        { phase: 'Month 1: Infrastructure', items: ['Learn Docker containerization', 'Deploy backend apps to AWS ECS'] },
+        { phase: 'Month 2: Next.js & TypeScript', items: ['Convert React projects to Next.js', 'Adopt TypeScript for structural type safety'] },
+        { phase: 'Month 3: Advanced AI/ML', items: ['Fine-tune open-source models using HuggingFace', 'Build RAG pipelines'] }
+      ]
+    };
   }
 };
 
@@ -158,7 +181,15 @@ export const getInterviewQuestion = async (type, category) => {
     return JSON.parse(cleanJSON);
   } catch (error) {
     console.error('Gemini Interview Assistant Error:', error);
-    throw new Error('Question generation failed.');
+    const questions = {
+      technical: `Can you explain the difference between Virtual DOM and Shadow DOM in React? (Note: Live AI offline, showing preset)`,
+      behavioral: `Tell me about a time you had a conflict with a teammate. How did you resolve it? (Note: Live AI offline, showing preset)`,
+      hr: `Why do you want to join our organization and what makes you a good fit? (Note: Live AI offline, showing preset)`
+    };
+    return {
+      question: questions[type] || 'Explain your experience with RESTful APIs.',
+      category: category || 'General Coding'
+    };
   }
 };
 
@@ -201,7 +232,15 @@ export const gradeInterviewAnswer = async (question, answer) => {
     return JSON.parse(cleanJSON);
   } catch (error) {
     console.error('Gemini Interview Grading Error:', error);
-    throw new Error('Grading failed.');
+    return {
+      score: 75,
+      feedback: `Good answer, but you should explain the performance benefits and discuss specific trade-offs. (Note: Live AI offline: ${error.message})`,
+      improvements: [
+        'Mention actual reconciliation algorithm details.',
+        'Use the STAR method for behavioral responses.',
+        'Structure your answer with a summary, action, and key results.'
+      ]
+    };
   }
 };
 
