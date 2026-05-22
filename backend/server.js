@@ -45,8 +45,33 @@ app.use(helmet({
 }));
 
 // CORS Configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5000'
+];
+
+if (process.env.CLIENT_URL) {
+  // Support comma-separated URLs or single URL
+  const urls = process.env.CLIENT_URL.split(',').map(url => url.trim());
+  allowedOrigins.push(...urls);
+}
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL || '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like curl, mobile apps, or server-to-server)
+    if (!origin) return callback(null, true);
+    
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      allowedOrigins.includes('*') || 
+                      !process.env.CLIENT_URL; // fallback to allow all if CLIENT_URL is not set
+                      
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200,
 };
