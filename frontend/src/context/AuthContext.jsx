@@ -3,7 +3,17 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const AuthContext = createContext();
 
 // Base API URL
-export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const getApiBase = () => {
+  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  // Remove trailing slash
+  url = url.replace(/\/$/, '');
+  // Ensure it ends with /api
+  if (!url.endsWith('/api')) {
+    url = `${url}/api`;
+  }
+  return url;
+};
+export const API_BASE = getApiBase();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

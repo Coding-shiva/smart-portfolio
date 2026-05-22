@@ -56,18 +56,24 @@ const allowedOrigins = [
 ];
 
 if (process.env.CLIENT_URL) {
-  // Support comma-separated URLs or single URL
-  const urls = process.env.CLIENT_URL.split(',').map(url => url.trim());
+  // Support comma-separated URLs or single URL and strip trailing slashes
+  const urls = process.env.CLIENT_URL.split(',').map(url => url.trim().replace(/\/$/, ''));
   allowedOrigins.push(...urls);
 }
+
+// Normalize all allowed origins by removing trailing slashes
+const normalizedAllowedOrigins = allowedOrigins.map(url => url.replace(/\/$/, ''));
 
 const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (like curl, mobile apps, or server-to-server)
     if (!origin) return callback(null, true);
     
-    const isAllowed = allowedOrigins.includes(origin) || 
-                      allowedOrigins.includes('*') || 
+    // Normalize the incoming origin by removing trailing slashes
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    
+    const isAllowed = normalizedAllowedOrigins.includes(normalizedOrigin) || 
+                      normalizedAllowedOrigins.includes('*') || 
                       !process.env.CLIENT_URL; // fallback to allow all if CLIENT_URL is not set
                       
     if (isAllowed) {
