@@ -32,9 +32,13 @@ connectDB();
 
 // Ensure uploads folder exists
 const uploadsDir = './uploads';
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
-  console.log('Created local uploads/ directory.');
+try {
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+    console.log('Created local uploads/ directory.');
+  }
+} catch (err) {
+  console.warn('Could not create uploads directory (might be read-only filesystem):', err.message);
 }
 
 const app = express();
